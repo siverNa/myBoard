@@ -34,4 +34,20 @@ class Channel extends Model
     {
         return $this->hasMany(Category::class, 'channel_pk', 'pk');
     }
+    
+    public function channelUserRoles()
+    {
+        return $this->hasMany(ChannelUserRole::class, 'channel_pk', 'pk');
+    }
+    
+    public function isManager(User $user): bool
+    {
+        return $this->channelUserRoles()
+            ->where('user_pk', $user->pk)
+            ->whereIn('role', [
+                ChannelUserRole::ROLE_OWNER,
+                ChannelUserRole::ROLE_MANAGER,
+            ])
+            ->exists();
+    }
 }

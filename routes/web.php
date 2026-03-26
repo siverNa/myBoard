@@ -3,6 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChannelController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\CommentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,9 +18,7 @@ use App\Http\Controllers\ChannelController;
 |
 */
 
-Route::get('/', function () {
-    return view('home');
-})->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register.form');
 Route::post('/register', [AuthController::class, 'register'])->name('register');
@@ -29,3 +30,40 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('/channels', [ChannelController::class, 'index'])->name('channels.index');
 Route::get('/channels/{channelPk}', [ChannelController::class, 'show'])->name('channels.show');
+
+Route::get('/channels/{channelPk}/posts/create', [PostController::class, 'create'])
+    ->middleware('auth')
+    ->name('posts.create');
+
+Route::post('/channels/{channelPk}/posts', [PostController::class, 'store'])
+    ->middleware('auth')
+    ->name('posts.store');
+
+// 게시글 상세보기
+Route::get('/posts/{postPk}', [PostController::class, 'show'])->name('posts.show');
+
+// 수정 페이지
+Route::get('/posts/{postPk}/edit', [PostController::class, 'edit'])
+    ->middleware('auth')
+    ->name('posts.edit');
+// 수정 진행
+Route::put('/posts/{postPk}', [PostController::class, 'update'])
+    ->middleware('auth')
+    ->name('posts.update');
+// 삭제
+Route::delete('/posts/{postPk}', [PostController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('posts.destroy');
+
+// 댓글 작성
+Route::post('/posts/{postPk}/comments', [CommentController::class, 'store'])
+    ->middleware('auth')
+    ->name('comments.store');
+// 댓글 수정
+Route::put('/comments/{commentPk}', [CommentController::class, 'update'])
+    ->middleware('auth')
+    ->name('comments.update');
+// 댓글 삭제
+Route::delete('/comments/{commentPk}', [CommentController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('comments.destroy');

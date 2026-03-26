@@ -6,6 +6,18 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
+    /**
+     * 사용자 권한
+     * @var string
+     */
+    public const ROLE_USER = 'user';
+    
+    /**
+     * 관리자 권한
+     * @var string
+     */
+    public const ROLE_SUPER_ADMIN = 'super_admin';
+    
     protected $primaryKey = 'pk';
     
     public $incrementing = true;
@@ -40,5 +52,19 @@ class User extends Authenticatable
     public function channels()
     {
         return $this->hasMany(Channel::class, 'created_user_pk', 'pk');
+    }
+    
+    public function isSuperAdmin(): bool
+    {
+        return $this->global_role === self::ROLE_SUPER_ADMIN;
+    }
+    
+    public function canManageChannel(Channel $channel): bool
+    {
+        if ($this->isSuperAdmin()) {
+            return true;
+        }
+        
+        return $channel->isManager($this);
     }
 }
