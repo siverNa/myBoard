@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', '로그인')
+@section('title', '비밀번호 재설정')
 
 @section('styles')
     <link rel="stylesheet" href="{{ asset('css/auth.css') }}">
@@ -8,7 +8,7 @@
 
 @section('content')
     <div class="auth-card">
-        <h2>로그인</h2>
+        <h2>비밀번호 재설정</h2>
 
         @if ($errors->any())
             <div class="auth-error">
@@ -20,7 +20,7 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('login') }}">
+        <form method="POST" action="{{ route('auth.password.request') }}">
             @csrf
 
             <div class="auth-field">
@@ -29,18 +29,13 @@
             </div>
 
             <div class="auth-field">
-                <label for="password">비밀번호</label>
-                <input type="password" id="password" name="password">
+                <label for="email">이메일</label>
+                <input type="email" id="email" name="email" value="{{ old('email') }}">
             </div>
 
             <div class="auth-actions">
-                <button type="submit" class="btn-basic">로그인</button>
-            </div>
-            
-            <div class="auth-sub-links">
-                <a href="{{ route('register.form') }}" class="auth-sub-link">계정이 없나요?</a>
-                <a href="{{ route('auth.find-id.form') }}" class="auth-sub-link">아이디 찾기</a>
-                <a href="{{ route('auth.password.request.form') }}" class="auth-sub-link">비밀번호 재설정</a>
+                <button type="submit" class="btn-basic">다음</button>
+                <a href="{{ route('login.form') }}" class="btn-secondary">로그인으로</a>
             </div>
         </form>
     </div>

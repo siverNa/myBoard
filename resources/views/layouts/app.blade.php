@@ -34,10 +34,16 @@
 
             <nav class="header-nav">
                 @auth
+                    <a href="{{ route('channel-requests.create') }}" class="header-link">채널 개설 신청</a>
+                
+                    @if (auth()->user()->isSuperAdmin())
+                        <a href="{{ route('channel-requests.index') }}" class="header-link">신청 관리</a>
+                    @endif
+                
                     <span class="header-user">
                         {{ auth()->user()->login_id }} 님
                     </span>
-
+                
                     <form method="POST" action="{{ route('logout') }}" class="logout-form">
                         @csrf
                         <button type="submit" class="btn-basic">로그아웃</button>

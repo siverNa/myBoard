@@ -71,4 +71,101 @@ class AuthController extends Controller
         
         return redirect('/');
     }
+    
+    public function showFindIdForm()
+    {
+        return view('auth.find-id');
+    }
+    
+    public function findId(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+        
+        $user = User::query()
+            ->where('email', $request->email)
+            ->first();
+        
+        return view('auth.find-id', [
+            'foundLoginId' => $user ? $user->login_id : null,
+            'searchedEmail' => $request->email,
+            'hasSearched' => true,
+        ]);
+    }
+    
+    public function showPasswordResetRequestForm()
+    {
+        return view('auth.password-reset-request');
+    }
+    
+    public function checkPasswordResetRequest(Request $request)
+    {
+        $request->validate([
+            'login_id' => 'required|string',
+            'email' => 'required|email',
+        ]);
+        
+        $user = User::query()
+            ->where('login_id', $request->login_id)
+            ->where('email', $request->email)
+            ->first();
+        
+        if (!$user) {
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'login_id' => '입력한 아이디와 이메일이 일치하는 계정을 찾을 수 없습니다.',
+                ]);
+        }
+        
+        return redirect()->route('auth.password.reset.form', [
+            'login_id' => $user->login_id,
+            'email' => $user->email,
+        ]);
+    }
+    
+    public function showPasswordResetForm(Request $request)
+    {
+        $loginId = $request->query('login_id');
+        $email = $request->query('email');
+        
+        if (empty($loginId) || empty($email)) {
+            return redirect()->route('auth.password.request.form')
+            ->with('error', '비밀번호 재설정 요청부터 다시 진행해주세요.');
+        }
+        
+        return view('auth.password-reset-form', [
+            'loginId' => $loginId,
+            'email' => $email,
+        ]);
+    }
+    
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'login_id' => 'required|string',
+            'email' => 'required|email',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+        
+        $user = User::query()
+            ->where('login_id', $request->login_id)
+            ->where('email', $request->email)
+            ->first();
+        
+        if (!$user) {
+            return redirect()
+                ->route('auth.password.request.form')
+                ->with('error', '비밀번호 재설정 요청부터 다시 진행해주세요.');
+        }
+        
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+        
+        return redirect()
+            ->route('login.form')
+            ->with('success', '비밀번호가 재설정되었습니다. 새 비밀번호로 로그인해주세요.');
+    }
 }

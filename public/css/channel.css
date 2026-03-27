@@ -367,6 +367,46 @@
     color: #2d6f88;
 }
 
+.channel-manager-card {
+    background-color: #ffffff;
+    border: 1px solid #d7e7ee;
+    border-radius: 18px;
+    box-shadow: 0 6px 18px rgba(100, 140, 160, 0.08);
+    padding: 18px 24px;
+}
+
+.channel-manager-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    align-items: center;
+}
+
+.channel-manager-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #4f6470;
+    font-size: 14px;
+}
+
+.channel-manager-item strong {
+    color: #355766;
+}
+
+.channel-manager-tooltip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 32px;
+    padding: 0 12px;
+    border: 1px solid #cfe3eb;
+    border-radius: 999px;
+    background-color: #f7fbfd;
+    color: #2d6f88;
+    cursor: default;
+}
+
 .empty-post-box {
     padding: 28px;
     text-align: center;
@@ -376,8 +416,91 @@
     background-color: #fbfeff;
 }
 
+.channel-post-search-form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+}
+
+.channel-post-search-input {
+    flex: 1;
+    min-width: 260px;
+    height: 40px;
+    padding: 0 12px;
+    border: 1px solid #cfe3eb;
+    border-radius: 10px;
+    background-color: #ffffff;
+    color: #2f3a44;
+    font-size: 14px;
+}
+
+.channel-post-search-input:focus {
+    outline: none;
+    border-color: #8fc2d4;
+    box-shadow: 0 0 0 3px rgba(143, 194, 212, 0.15);
+}
+
 .pagination-wrap {
     margin-top: 18px;
+}
+
+.my-pagination {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.my-pagination-list {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.my-pagination-item {
+    min-width: 38px;
+    height: 38px;
+    padding: 0 12px;
+    border: 1px solid #cfe3eb;
+    border-radius: 10px;
+    background-color: #ffffff;
+    color: #4f6470;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    box-sizing: border-box;
+}
+
+.my-pagination-item:hover {
+    background-color: #eef8fb;
+    color: #2d6f88;
+}
+
+.my-pagination-item.active {
+    background-color: #dff1f8;
+    border-color: #9fc8d8;
+    color: #2d6f88;
+    font-weight: 700;
+    cursor: default;
+}
+
+.my-pagination-item.disabled {
+    background-color: #f7fbfd;
+    color: #9aaab3;
+    border-color: #e1eef3;
+    cursor: default;
+}
+
+.my-pagination-item.dots {
+    border: none;
+    background: transparent;
+    min-width: auto;
+    padding: 0 4px;
+    color: #7c919c;
 }
 
 @media (max-width: 1024px) {

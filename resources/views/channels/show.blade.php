@@ -19,11 +19,34 @@
                 </div>
             </div>
         </section>
+        
+        <section class="channel-manager-card">
+            <div class="channel-manager-row">
+                <div class="channel-manager-item">
+                    <strong>소유자</strong>
+                    <span>{{ $ownerLoginId ? $ownerLoginId : '-' }}</span>
+                </div>
+        
+                <div class="channel-manager-item">
+                    <strong>관리자</strong>
+        
+                    @if (!empty($managerLoginIds))
+                        <span
+                            class="channel-manager-tooltip"
+                            title="{{ implode(', ', $managerLoginIds) }}"
+                        >관리자
+                        </span>
+                    @else
+                        <span>-</span>
+                    @endif
+                </div>
+            </div>
+        </section>
 
         <section class="category-section">
             <div class="category-tabs">
                 <a
-                    href="{{ route('channels.show', $channel->pk) }}"
+                    href="{{ route('channels.show', array('channelPk' => $channel->pk, 'keyword' => !empty($keyword) ? $keyword : null)) }}"
                     class="category-tab {{ empty($selectedCategoryPk) ? 'active' : '' }}"
                 >
                     전체
@@ -31,7 +54,11 @@
 
                 @foreach ($channel->categories as $category)
                     <a
-                        href="{{ route('channels.show', ['channelPk' => $channel->pk, 'category_pk' => $category->pk]) }}"
+                        href="{{ route('channels.show', array(
+                            'channelPk' => $channel->pk,
+                            'category_pk' => $category->pk,
+                            'keyword' => !empty($keyword) ? $keyword : null
+                        )) }}"
                         class="category-tab {{ (string)$selectedCategoryPk === (string)$category->pk ? 'active' : '' }}"
                     >
                         {{ $category->name }}
@@ -42,18 +69,50 @@
 
         <section class="post-board-card">
             <div class="post-board-header">
-            <div>
-                <h3>게시글 목록</h3>
-                <span class="post-board-meta">최신 글 순으로 표시됩니다.</span>
+                <div>
+                    <h3>게시글 목록</h3>
+                    <span class="post-board-meta">
+                        @if (!empty($keyword))
+                            "{{ $keyword }}" 검색 결과입니다.
+                        @else
+                            최신 글 순으로 표시됩니다.
+                        @endif
+                    </span>
+                </div>
+                @auth
+                    <a href="{{ route('posts.create', $channel->pk) }}" class="btn-basic">글쓰기</a>
+                @endauth
             </div>
-            @auth
-                <a href="{{ route('posts.create', $channel->pk) }}" class="btn-basic">글쓰기</a>
-            @endauth
-        </div>
+            <form method="GET" action="{{ route('channels.show', $channel->pk) }}" class="channel-post-search-form" autocomplete="off">
+                @if (!empty($selectedCategoryPk))
+                    <input type="hidden" name="category_pk" value="{{ $selectedCategoryPk }}">
+                @endif
+            
+                <input
+                    type="text"
+                    name="keyword"
+                    class="channel-post-search-input"
+                    placeholder="제목, 내용, 작성자로 검색"
+                    value="{{ !empty($keyword) ? $keyword : '' }}"
+                    autocomplete="off"
+                >
+            
+                <button type="submit" class="btn-basic">검색</button>
+            
+                @if (!empty($keyword))
+                    <a href="{{ route('channels.show', array('channelPk' => $channel->pk, 'category_pk' => $selectedCategoryPk)) }}" class="btn-secondary">
+                        초기화
+                    </a>
+                @endif
+            </form>
 
             @if ($posts->isEmpty())
                 <div class="empty-post-box">
-                    현재 등록된 게시글이 없습니다.
+                    @if (!empty($keyword))
+                        검색 조건에 맞는 게시글이 없습니다.
+                    @else
+                        현재 등록된 게시글이 없습니다.
+                    @endif
                 </div>
             @else
                 <div class="post-table-wrap">
@@ -90,7 +149,7 @@
                 </div>
 
                 <div class="pagination-wrap">
-                    {{ $posts->links() }}
+                    {{ $posts->links('vendor.pagination.myboard') }}
                 </div>
             @endif
         </section>
