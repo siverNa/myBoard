@@ -17,26 +17,26 @@
                     <span>/</span>
                     <span>{{ $post->category ? $post->category->name : '미분류' }}</span>
                 </div>
-            
+
                 <div class="post-top-actions">
                     <a href="{{ route('channels.show', $post->channel->pk) }}" class="post-back-link">
                         채널 게시판으로 돌아가기
                     </a>
-            
+
                     @auth
                         @php
                             $canManage = false;
-            
+
                             if ((int) auth()->user()->pk === (int) $post->user_pk) {
                                 $canManage = true;
                             } elseif (auth()->user()->canManageChannel($post->channel)) {
                                 $canManage = true;
                             }
                         @endphp
-            
+
                         @if ($canManage)
                             <a href="{{ route('posts.edit', $post->pk) }}" class="btn-basic">수정</a>
-            
+
                             <form method="POST" action="{{ route('posts.destroy', $post->pk) }}" class="post-delete-form" onsubmit="return confirm('게시글을 삭제하시겠습니까?');">
                                 @csrf
                                 @method('DELETE')
@@ -75,12 +75,71 @@
             </div>
         </section>
 
+        @if ($post->attachments->isNotEmpty())
+            <section class="post-detail-card">
+                <div class="post-attachment-header">
+                    <h3>첨부파일</h3>
+                    <span>{{ $post->attachments->count() }}개</span>
+                </div>
+
+                <div class="post-attachment-list">
+                    @foreach ($post->attachments as $attachment)
+                        <div class="post-attachment-item">
+                            <div class="post-attachment-meta">
+                                <a href="{{ route('attachments.download', $attachment->pk) }}" class="post-attachment-name">
+                                    {{ $attachment->original_name }}
+                                </a>
+                                <span class="post-attachment-size">
+                                    {{ number_format($attachment->file_size / 1024, 1) }} KB
+                                </span>
+                            </div>
+
+                            @if ($attachment->isImage())
+                                <div class="post-attachment-image-wrap">
+                                    <img
+                                        src="{{ asset('storage/' . $attachment->file_path) }}"
+                                        alt="{{ $attachment->original_name }}"
+                                        class="post-attachment-image"
+                                    >
+                                </div>
+                            @endif
+
+                            @auth
+                                @php
+                                    $canManageAttachment = false;
+
+                                    if ((int) auth()->user()->pk === (int) $post->user_pk) {
+                                        $canManageAttachment = true;
+                                    } elseif (auth()->user()->canManageChannel($post->channel)) {
+                                        $canManageAttachment = true;
+                                    }
+                                @endphp
+
+                                @if ($canManageAttachment)
+                                    <form
+                                        method="POST"
+                                        action="{{ route('attachments.destroy', $attachment->pk) }}"
+                                        class="post-attachment-delete-form"
+                                        onsubmit="return confirm('첨부파일을 삭제하시겠습니까?');"
+                                    >
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn-secondary">파일 삭제</button>
+                                    </form>
+                                @endif
+                            @endauth
+                        </div>
+                    @endforeach
+                </div>
+            </section>
+        @endif
+
         <section class="comment-card">
             <div class="comment-header">
                 <h3>댓글</h3>
                 <span>총 {{ number_format($post->comments_count) }}개</span>
             </div>
-        
+
             @if ($errors->any())
                 <div class="post-form-error-box" style="margin-top: 18px;">
                     <ul>
@@ -90,7 +149,7 @@
                     </ul>
                 </div>
             @endif
-        
+
             @if ($post->comments->isEmpty())
                 <div class="comment-empty" style="margin-top: 18px;">
                     아직 등록된 댓글이 없습니다.
@@ -108,25 +167,25 @@
                                         {{ $comment->created_at ? $comment->created_at->format('Y-m-d H:i') : '-' }}
                                     </span>
                                 </div>
-                    
+
                                 @auth
                                     @php
                                         $canManageComment = false;
-                    
+
                                         if ((int) auth()->user()->pk === (int) $comment->user_pk) {
                                             $canManageComment = true;
                                         } elseif (auth()->user()->canManageChannel($post->channel)) {
                                             $canManageComment = true;
                                         }
                                     @endphp
-                                    
+
                                     @if ($canManageComment)
                                         <div class="comment-actions">
                                             <a
                                                 href="{{ route('posts.show', array('postPk' => $post->pk, 'edit_comment_pk' => $comment->pk)) }}"
                                                 class="comment-action-link"
                                             >수정</a>
-                    
+
                                             <form
                                                 method="POST"
                                                 action="{{ route('comments.destroy', $comment->pk) }}"
@@ -141,13 +200,13 @@
                                     @endif
                                 @endauth
                             </div>
-                            
+
                             @if ((int) $editCommentPk === (int) $comment->pk)
                                 <div class="comment-inline-edit-wrap">
                                     <form method="POST" action="{{ route('comments.update', $comment->pk) }}" class="comment-form">
                                         @csrf
                                         @method('PUT')
-                    
+
                                         <div class="comment-form-field">
                                             <label for="edit_content_{{ $comment->pk }}">댓글 수정</label>
                                             <textarea
@@ -156,7 +215,7 @@
                                                 rows="4"
                                             >{{ old('content', $comment->content) }}</textarea>
                                         </div>
-                    
+
                                         <div class="comment-form-actions">
                                             <button type="submit" class="btn-basic">수정</button>
                                             <a href="{{ route('posts.show', $post->pk) }}" class="btn-secondary" style="margin-left: 5px;">취소</a>
@@ -172,12 +231,12 @@
                     @endforeach
                 </div>
             @endif
-        
+
             @auth
                 <div class="comment-form-wrap" style="margin-top: 18px;">
                     <form method="POST" action="{{ route('comments.store', $post->pk) }}" class="comment-form">
                         @csrf
-        
+
                         <div class="comment-form-field">
                             <label for="content">댓글 작성</label>
                             <textarea
@@ -187,7 +246,7 @@
                                 placeholder="댓글을 입력하세요."
                             >{{ old('content') }}</textarea>
                         </div>
-        
+
                         <div class="comment-form-actions">
                             <button type="submit" class="btn-basic">댓글 등록</button>
                         </div>

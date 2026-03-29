@@ -7,6 +7,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ChannelRequestController;
+use App\Http\Controllers\PostAttachmentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -100,3 +101,10 @@ Route::post('/admin/channel-requests/{requestPk}/approve', [ChannelRequestContro
 Route::post('/admin/channel-requests/{requestPk}/reject', [ChannelRequestController::class, 'reject'])
     ->middleware('auth')
     ->name('channel-requests.reject');
+
+Route::get('/attachments/{attachmentPk}/download', [PostAttachmentController::class, 'download'])
+    ->name('attachments.download');
+
+Route::delete('/attachments/{attachmentPk}', [PostAttachmentController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('attachments.destroy');

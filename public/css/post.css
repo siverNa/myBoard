@@ -391,6 +391,108 @@
     margin-bottom: -1px;
 }
 
+.post-form-help {
+    font-size: 13px;
+    color: #6e8792;
+    line-height: 1.5;
+}
+
+.post-existing-attachments {
+    margin-top: 8px;
+    padding: 14px;
+    border: 1px solid #e1eef3;
+    border-radius: 12px;
+    background-color: #fbfeff;
+}
+
+.post-existing-attachments strong {
+    display: block;
+    margin-bottom: 10px;
+    color: #355766;
+}
+
+.post-existing-attachment-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.post-existing-attachment-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-size: 14px;
+    color: #4f6470;
+}
+
+.post-attachment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.post-attachment-header h3 {
+    margin: 0;
+    font-size: 22px;
+    color: #355766;
+}
+
+.post-attachment-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.post-attachment-item {
+    border: 1px solid #e1eef3;
+    border-radius: 14px;
+    background-color: #fbfeff;
+    padding: 16px;
+}
+
+.post-attachment-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.post-attachment-name {
+    color: #2d6f88;
+    font-weight: 700;
+    word-break: break-all;
+}
+
+.post-attachment-name:hover {
+    color: #1f586d;
+}
+
+.post-attachment-size {
+    color: #6e8792;
+    font-size: 13px;
+}
+
+.post-attachment-image-wrap {
+    margin-bottom: 12px;
+}
+
+.post-attachment-image {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 12px;
+    border: 1px solid #d7e7ee;
+}
+
+.post-attachment-delete-form {
+    margin: 0;
+}
+
 @media (max-width: 768px) {
     .post-title-area h2 {
         font-size: 24px;
