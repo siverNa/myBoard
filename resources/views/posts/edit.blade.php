@@ -32,7 +32,7 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('posts.update', $post->pk) }}" class="post-form">
+            <form method="POST" action="{{ route('posts.update', $post->pk) }}" class="post-form" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
@@ -67,6 +67,35 @@
                         rows="12"
                     >{{ old('content', $post->content) }}</textarea>
                 </div>
+
+                <div class="post-form-field">
+                    <label for="attachments">첨부 이미지 추가</label>
+                    <input
+                        type="file"
+                        name="attachments[]"
+                        id="attachments"
+                        accept=".jpg,.jpeg,.png,.gif,.webp,image/jpeg,image/png,image/gif,image/webp"
+                        multiple
+                    >
+                    <small class="post-form-help">jpg, jpeg, png, gif, webp 파일만 업로드할 수 있습니다. 최대 5MB</small>
+                </div>
+
+                @if ($post->attachments->isNotEmpty())
+                    <div class="post-existing-attachments">
+                        <strong>기존 첨부파일</strong>
+
+                        <div class="post-existing-attachment-list">
+                            @foreach ($post->attachments as $attachment)
+                                <div class="post-existing-attachment-item">
+                                    <a href="{{ route('attachments.download', $attachment->pk) }}">
+                                        {{ $attachment->original_name }}
+                                    </a>
+                                    <span>{{ number_format($attachment->file_size / 1024, 1) }} KB</span>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
 
                 <div class="post-form-actions">
                     <button type="submit" class="btn-basic">수정하기</button>

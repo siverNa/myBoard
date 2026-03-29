@@ -32,7 +32,7 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('posts.store', $channel->pk) }}" class="post-form">
+            <form method="POST" action="{{ route('posts.store', $channel->pk) }}" class="post-form" enctype="multipart/form-data">
                 @csrf
 
                 <div class="post-form-field">
@@ -65,6 +65,18 @@
                         id="content"
                         rows="12"
                     >{{ old('content') }}</textarea>
+                </div>
+
+                <div class="post-form-field">
+                    <label for="attachments">첨부 이미지</label>
+                    <input
+                        type="file"
+                        name="attachments[]"
+                        id="attachments"
+                        accept=".jpg,.jpeg,.png,.gif,.webp,image/jpeg,image/png,image/gif,image/webp"
+                        multiple
+                    >
+                    <small class="post-form-help">jpg, jpeg, png, gif, webp 파일만 업로드할 수 있습니다. 최대 5MB</small>
                 </div>
 
                 <div class="post-form-actions">
