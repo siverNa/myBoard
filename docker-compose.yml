@@ -1,0 +1,63 @@
+version: "3.8"
+
+services:
+  nginx:
+    image: nginx:stable-alpine
+    ports:
+      - "8088:80"
+    volumes:
+      - ./:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - app
+    networks:
+      - myboard-network
+
+  app:
+    build:
+      context: .
+      dockerfile: ./docker/php/Dockerfile
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini:ro
+    depends_on:
+      - db
+    networks:
+      - myboard-network
+
+  db:
+    image: mysql:5.7
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: myboard
+      MYSQL_USER: myboard_user
+      MYSQL_PASSWORD: myboard_pass
+      TZ: Asia/Seoul
+    ports:
+      - "33060:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - myboard-network
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "8089:80"
+    networks:
+      - myboard-network
+
+networks:
+  myboard-network:
+
+volumes:
+  dbdata:
