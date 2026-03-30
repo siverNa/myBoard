@@ -73,6 +73,53 @@
             <div class="post-content-area">
                 {!! nl2br(e($post->content)) !!}
             </div>
+            
+            @php
+                $imageAttachments = $post->attachments->filter(function ($attachment) {
+                    return $attachment->isImage();
+                });
+            @endphp
+            
+            @if ($imageAttachments->isNotEmpty())
+                <div class="post-image-gallery-section">
+                    <div class="post-image-gallery-header">
+                        <h3>첨부 이미지</h3>
+                        <span>{{ $imageAttachments->count() }}개</span>
+                    </div>
+            
+                    <div class="post-image-gallery">
+                        @foreach ($imageAttachments as $attachment)
+                            <button
+                                type="button"
+                                class="post-image-thumb-button"
+                                data-image-src="{{ asset('storage/' . $attachment->file_path) }}"
+                                data-image-name="{{ $attachment->original_name }}"
+                            >
+                                <img
+                                    src="{{ asset('storage/' . $attachment->file_path) }}"
+                                    alt="{{ $attachment->original_name }}"
+                                    class="post-image-thumb"
+                                >
+                            </button>
+                        @endforeach
+                    </div>
+                </div>
+            
+                <div id="imagePreviewModal" class="image-preview-modal" aria-hidden="true">
+                    <div class="image-preview-backdrop" data-modal-close="true"></div>
+            
+                    <div class="image-preview-dialog" role="dialog" aria-modal="true" aria-label="첨부 이미지 보기">
+                        <div class="image-preview-top">
+                            <span id="imagePreviewTitle" class="image-preview-title"></span>
+                            <button type="button" id="imagePreviewCloseButton" class="image-preview-close-button">닫기</button>
+                        </div>
+            
+                        <div class="image-preview-body">
+                            <img id="imagePreviewTarget" src="" alt="" class="image-preview-target">
+                        </div>
+                    </div>
+                </div>
+            @endif
         </section>
 
         @if ($post->attachments->isNotEmpty())
@@ -93,16 +140,6 @@
                                     {{ number_format($attachment->file_size / 1024, 1) }} KB
                                 </span>
                             </div>
-
-                            @if ($attachment->isImage())
-                                <div class="post-attachment-image-wrap">
-                                    <img
-                                        src="{{ asset('storage/' . $attachment->file_path) }}"
-                                        alt="{{ $attachment->original_name }}"
-                                        class="post-attachment-image"
-                                    >
-                                </div>
-                            @endif
 
                             @auth
                                 @php
@@ -258,3 +295,62 @@
         </section>
     </div>
 @endsection
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var modal = document.getElementById('imagePreviewModal');
+    var modalImage = document.getElementById('imagePreviewTarget');
+    var modalTitle = document.getElementById('imagePreviewTitle');
+    var closeButton = document.getElementById('imagePreviewCloseButton');
+    var thumbButtons = document.querySelectorAll('.post-image-thumb-button');
+    var backdrop = modal ? modal.querySelector('.image-preview-backdrop') : null;
+
+    if (!modal || !modalImage || !modalTitle || !closeButton || thumbButtons.length === 0) {
+        return;
+    }
+
+    function openModal(imageSrc, imageName) {
+        modalImage.setAttribute('src', imageSrc);
+        modalImage.setAttribute('alt', imageName);
+        modalTitle.textContent = imageName;
+
+        modal.classList.add('is-open');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('modal-open');
+    }
+
+    function closeModal() {
+        modal.classList.remove('is-open');
+        modal.setAttribute('aria-hidden', 'true');
+        modalImage.setAttribute('src', '');
+        modalImage.setAttribute('alt', '');
+        modalTitle.textContent = '';
+        document.body.classList.remove('modal-open');
+    }
+
+    for (var i = 0; i < thumbButtons.length; i++) {
+        thumbButtons[i].addEventListener('click', function () {
+            var imageSrc = this.getAttribute('data-image-src');
+            var imageName = this.getAttribute('data-image-name');
+
+            openModal(imageSrc, imageName);
+        });
+    }
+
+    closeButton.addEventListener('click', function () {
+        closeModal();
+    });
+
+    if (backdrop) {
+        backdrop.addEventListener('click', function () {
+            closeModal();
+        });
+    }
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && modal.classList.contains('is-open')) {
+            closeModal();
+        }
+    });
+});
+</script>

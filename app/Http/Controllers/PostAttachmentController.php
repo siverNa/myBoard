@@ -49,7 +49,7 @@ class PostAttachmentController extends Controller
         $attachment->delete();
 
         return redirect()
-            ->route('posts.show', $postPk)
+            ->back()
             ->with('success', '첨부파일이 삭제되었습니다.');
     }
 
