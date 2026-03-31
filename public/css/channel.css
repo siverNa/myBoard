@@ -97,6 +97,9 @@
     font-size: 14px;
     line-height: 1.35;
     transition: background-color 0.2s ease, transform 0.2s ease;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .post-list a:hover {
@@ -123,7 +126,7 @@
     background: linear-gradient(135deg, #eaf8fd 0%, #f9fdff 100%);
     border: 1px solid #d8ebf2;
     border-radius: 20px;
-    padding: 24px 28px;
+    padding: 28px;
 }
 
 .channel-list-header h2 {
@@ -357,6 +360,14 @@
 
 .post-title-cell {
     text-align: left !important;
+}
+
+.post-title {
+    display: block;
+    max-width: 422px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .post-title-link {

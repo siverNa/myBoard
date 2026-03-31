@@ -133,7 +133,7 @@
                                 <tr>
                                     <td>{{ $post->pk }}</td>
                                     <td>{{ $post->category ? $post->category->name : '-' }}</td>
-                                    <td class="post-title-cell">
+                                    <td class="post-title-cell post-title" title="{{ $post->title }}">
                                         <a href="{{ route('posts.show', $post->pk) }}" class="post-title-link">
                                             {{ $post->title }}
                                         </a>

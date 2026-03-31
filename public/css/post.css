@@ -255,6 +255,7 @@
     align-items: center;
     gap: 12px;
     margin-top: 8px;
+    justify-content: flex-end;
 }
 
 .post-cancel-link {
@@ -512,6 +513,7 @@
 
 .post-attachment-delete-form {
     margin: 0;
+    float: right;
 }
 
 .post-image-gallery-section {

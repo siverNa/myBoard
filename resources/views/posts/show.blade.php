@@ -40,7 +40,7 @@
                             <form method="POST" action="{{ route('posts.destroy', $post->pk) }}" class="post-delete-form" onsubmit="return confirm('게시글을 삭제하시겠습니까?');">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn-basic">삭제</button>
+                                <button type="submit" class="btn-basic" style="font-size: 16px;">삭제</button>
                             </form>
                         @endif
                     @endauth
