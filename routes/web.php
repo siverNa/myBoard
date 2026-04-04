@@ -8,6 +8,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ChannelRequestController;
 use App\Http\Controllers\PostAttachmentController;
+use App\Http\Controllers\Admin\StatisticController;
 
 /*
 |--------------------------------------------------------------------------
@@ -108,3 +109,11 @@ Route::get('/attachments/{attachmentPk}/download', [PostAttachmentController::cl
 Route::delete('/attachments/{attachmentPk}', [PostAttachmentController::class, 'destroy'])
     ->middleware('auth')
     ->name('attachments.destroy');
+
+Route::prefix('admin')
+    ->name('admin.')
+    ->middleware(['auth'])
+    ->group(function () {
+        Route::get('/statistics', [StatisticController::class, 'index'])->name('statistics.index');
+        Route::post('/statistics/run', [StatisticController::class, 'runSnapshot'])->name('statistics.run');
+    });

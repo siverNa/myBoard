@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'myBoard')</title>
-    
+
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     @yield('styles')
 </head>
@@ -15,7 +15,7 @@
                 <div class="site-logo">
                     <a href="{{ route('home') }}">myBoard</a>
                 </div>
-            
+
                 <nav class="header-menu">
                     <a href="{{ route('channels.index') }}" class="header-link">채널 목록</a>
                     <!-- 검색창은 나중에 구현 -->
@@ -35,15 +35,16 @@
             <nav class="header-nav">
                 @auth
                     <a href="{{ route('channel-requests.create') }}" class="header-link">채널 개설 신청</a>
-                
+
                     @if (auth()->user()->isSuperAdmin())
                         <a href="{{ route('channel-requests.index') }}" class="header-link">신청 관리</a>
+                        <a href="{{ route('admin.statistics.index') }}" class="header-link">통계</a>
                     @endif
-                
+
                     <span class="header-user">
                         {{ auth()->user()->login_id }} 님
                     </span>
-                
+
                     <form method="POST" action="{{ route('logout') }}" class="logout-form">
                         @csrf
                         <button type="submit" class="btn-basic">로그아웃</button>
