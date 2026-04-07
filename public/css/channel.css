@@ -388,9 +388,25 @@
 
 .channel-manager-row {
     display: flex;
-    flex-wrap: wrap;
-    gap: 24px;
     align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.channel-manager-info {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    flex-wrap: wrap;
+}
+
+.channel-manager-action {
+    margin-left: auto;
+}
+
+.channel-manager-action .btn-basic {
+    white-space: nowrap;
 }
 
 .channel-manager-item {

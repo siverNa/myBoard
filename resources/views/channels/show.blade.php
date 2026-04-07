@@ -19,27 +19,39 @@
                 </div>
             </div>
         </section>
-        
+
         <section class="channel-manager-card">
             <div class="channel-manager-row">
-                <div class="channel-manager-item">
-                    <strong>소유자</strong>
-                    <span>{{ $ownerLoginId ? $ownerLoginId : '-' }}</span>
+                <div class="channel-manager-info">
+                    <div class="channel-manager-item">
+                        <strong>소유자</strong>
+                        <span>{{ $ownerLoginId ? $ownerLoginId : '-' }}</span>
+                    </div>
+
+                    <div class="channel-manager-item">
+                        <strong>관리자</strong>
+
+                        @if (!empty($managerLoginIds))
+                            <span
+                                class="channel-manager-tooltip"
+                                title="{{ implode(', ', $managerLoginIds) }}"
+                            >관리자
+                            </span>
+                        @else
+                            <span>-</span>
+                        @endif
+                    </div>
                 </div>
-        
-                <div class="channel-manager-item">
-                    <strong>관리자</strong>
-        
-                    @if (!empty($managerLoginIds))
-                        <span
-                            class="channel-manager-tooltip"
-                            title="{{ implode(', ', $managerLoginIds) }}"
-                        >관리자
-                        </span>
-                    @else
-                        <span>-</span>
+
+                @auth
+                    @if (auth()->user()->canManageChannel($channel))
+                        <div class="channel-manager-action">
+                            <a href="{{ route('channels.manage', $channel->pk) }}" class="btn-basic">
+                                채널 관리
+                            </a>
+                        </div>
                     @endif
-                </div>
+                @endauth
             </div>
         </section>
 
@@ -87,7 +99,7 @@
                 @if (!empty($selectedCategoryPk))
                     <input type="hidden" name="category_pk" value="{{ $selectedCategoryPk }}">
                 @endif
-            
+
                 <input
                     type="text"
                     name="keyword"
@@ -96,9 +108,9 @@
                     value="{{ !empty($keyword) ? $keyword : '' }}"
                     autocomplete="off"
                 >
-            
+
                 <button type="submit" class="btn-basic">검색</button>
-            
+
                 @if (!empty($keyword))
                     <a href="{{ route('channels.show', array('channelPk' => $channel->pk, 'category_pk' => $selectedCategoryPk)) }}" class="btn-secondary">
                         초기화

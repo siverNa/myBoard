@@ -9,6 +9,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ChannelRequestController;
 use App\Http\Controllers\PostAttachmentController;
 use App\Http\Controllers\Admin\StatisticController;
+use App\Http\Controllers\ChannelManageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -82,7 +83,7 @@ Route::delete('/comments/{commentPk}', [CommentController::class, 'destroy'])
     ->middleware('auth')
     ->name('comments.destroy');
 
-// 채널 관련 라우트
+// 채널 신청 관련 라우트
 Route::get('/channel-requests/create', [ChannelRequestController::class, 'create'])
     ->middleware('auth')
     ->name('channel-requests.create');
@@ -103,6 +104,7 @@ Route::post('/admin/channel-requests/{requestPk}/reject', [ChannelRequestControl
     ->middleware('auth')
     ->name('channel-requests.reject');
 
+// 첨부파일 관련 라우트
 Route::get('/attachments/{attachmentPk}/download', [PostAttachmentController::class, 'download'])
     ->name('attachments.download');
 
@@ -110,6 +112,7 @@ Route::delete('/attachments/{attachmentPk}', [PostAttachmentController::class, '
     ->middleware('auth')
     ->name('attachments.destroy');
 
+// 채널 통계
 Route::prefix('admin')
     ->name('admin.')
     ->middleware(['auth'])
@@ -117,3 +120,33 @@ Route::prefix('admin')
         Route::get('/statistics', [StatisticController::class, 'index'])->name('statistics.index');
         Route::post('/statistics/run', [StatisticController::class, 'runSnapshot'])->name('statistics.run');
     });
+
+// 채널 관리자 페이지
+Route::get('/channels/{channelPk}/manage', [ChannelManageController::class, 'index'])
+    ->middleware('auth')
+    ->name('channels.manage');
+
+Route::post('/channels/{channelPk}/managers', [ChannelManageController::class, 'storeManager'])
+    ->middleware('auth')
+    ->name('channels.managers.store');
+
+Route::delete('/channels/{channelPk}/managers/{userPk}', [ChannelManageController::class, 'destroyManager'])
+    ->middleware('auth')
+    ->name('channels.managers.destroy');
+
+Route::put('/channels/{channelPk}/manage', [ChannelManageController::class, 'update'])
+    ->middleware('auth')
+    ->name('channels.manage.update');
+
+// 카테고리 관리
+Route::post('/channels/{channelPk}/categories', [ChannelManageController::class, 'storeCategory'])
+    ->middleware('auth')
+    ->name('channels.categories.store');
+
+Route::put('/channels/{channelPk}/categories/{categoryPk}', [ChannelManageController::class, 'updateCategory'])
+    ->middleware('auth')
+    ->name('channels.categories.update');
+
+Route::delete('/channels/{channelPk}/categories/{categoryPk}', [ChannelManageController::class, 'destroyCategory'])
+    ->middleware('auth')
+    ->name('channels.categories.destroy');
