@@ -1,7 +1,6 @@
-FROM php:7.4-fpm
+FROM php:8.3-fpm
 
-RUN sed -i 's|deb.debian.org|archive.debian.org|g' /etc/apt/sources.list \
-    && apt-get -o Acquire::Check-Valid-Until=false update \
+RUN apt-get update \
     && apt-get install -y \
         git \
         curl \
