@@ -13,8 +13,8 @@ myBoard는 채널 기반 게시판 시스템으로,
 ## 🛠 기술 스택
 
 ### Backend
-- PHP 7.4
-- Laravel 8.75
+- PHP 8.3
+- Laravel 13
 
 ### Database
 - MySQL 5.7
@@ -115,9 +115,6 @@ DB 정보:
 ### 포트 충돌
 포트가 이미 사용 중일 경우 docker-compose 포트 변경
 
-### Docker 속도 이슈
-bind mount로 인해 로컬보다 약간 느릴 수 있음
-
 ### 권한 문제
 ```bash
 docker compose exec app chmod -R 775 storage bootstrap/cache
@@ -129,3 +126,35 @@ docker compose exec app chown -R www-data:www-data storage bootstrap/cache
 ## 📄 상세 설계 문서
 
 docs/SPEC.md 참고
+
+---
+## 추가내용
+## 🔄 기술 환경 업그레이드
+
+최근 PHP 보안 이슈가 발생하였습니다.
+초기 PHP 7.4 및 Laravel 8 기반으로 개발한 프로젝트를 보안 및 유지보수 측면에서 개선하기 위해 단계적으로 업그레이드했습니다.
+
+### 업그레이드 이력
+
+| 항목 | 기존 버전 | 변경 버전 |
+|---|---|---|
+| PHP | 7.4 | 8.3 |
+| Laravel | 8 | 13 |
+
+### 주요 작업 내용
+
+- PHP 런타임 버전 업그레이드
+- Laravel 메이저 버전 단계별 업그레이드 (8 → 9 → 10 → 11 → 12 → 13)
+- 버전별 Composer 의존성 충돌 해결 및 패키지 업데이트
+- Laravel 버전 변경에 따른 미들웨어 및 설정 호환성 수정
+- Docker 실행 환경 재빌드 및 검증
+- PHPUnit 버전 업그레이드
+
+### 검증 결과
+
+- 회원가입, 로그인 및 로그아웃 정상 동작 확인
+- 게시글 및 댓글 CRUD 정상 동작 확인
+- 채널 및 관리자 권한 기능 정상 동작 확인
+- 통계 및 파일 업로드 기능 정상 동작 확인
+
+업그레이드 이후에도 기존 서비스 기능이 정상적으로 동작하는 것을 확인했습니다.
